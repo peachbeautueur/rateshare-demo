@@ -160,7 +160,7 @@ export default function App() {
     <div style={styles.appWrap}>
       {/* Top Bar */}
       <header style={styles.topbar}>
-        <div style={styles.brandWrap}><Logo /><span style={styles.brandText}>RateShare</span></div>
+        <div style={styles.brandWrap}><Logo /><span style={styles.brandText}>Calculator demo</span></div>
         <div style={styles.topbarRight}>
           <input style={styles.search} placeholder="Search…" />
           <button style={styles.pillBtn}>Dark Mode</button>
