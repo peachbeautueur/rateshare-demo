@@ -58,6 +58,13 @@ export default function App() {
   const [existingCustomer, setExistingCustomer] = useState("");
   const [newContact, setNewContact] = useState({ name: "", phone: "", email: "" });
 
+  // modified const
+  const [uom, setUom] = useState("");
+  
+  const [accessContact, setAccessContact] = useState({ name: "", email: "" });
+
+
+
   // Demo customer list for mapping (typeahead)
   const demoCustomers = [
     "Acme Logistics",
@@ -258,6 +265,116 @@ function AddCalculator(props) {
     handleSubmit,
   } = props;
 
+  // Step 2 static table
+  const step2Rows = [
+    {
+      id: "file1",
+      scope: "file 1",
+      customer: "Ikea",
+      code: "123456",
+      uom: "PLL",
+      sales: "Jens Jensen",
+      expiration: "31-12-2025",
+      adv: "YES",
+    },
+    {
+      id: "file2",
+      scope: "file 2",
+      customer: "Ikea",
+      code: "123456",
+      uom: "CBM",
+      sales: "Jens Jensen",
+      expiration: "31-03-2026",
+      adv: "YES",
+    },
+    {
+      id: "file3",
+      scope: "file 3",
+      customer: "Ikea",
+      code: "123456",
+      uom: "KG",
+      sales: "Jens Jensen",
+      expiration: "31-03-2026",
+      adv: "YES",
+    },
+    {
+      id: "file4",
+      scope: "file 4",
+      customer: "Ikea",
+      code: "123456",
+      uom: "CBM",
+      sales: "Jens Jensen",
+      expiration: "31-03-2026",
+      adv: "YES",
+    },
+    {
+      id: "file5",
+      scope: "file 5",
+      customer: "Ikea",
+      code: "123456",
+      uom: "CBM",
+      sales: "Jens Jensen",
+      expiration: "31-03-2026",
+      adv: "YES",
+    },
+  ];
+
+  const [selectedScopeId, setSelectedScopeId] = useState(step2Rows[0]?.id ?? null);
+
+  // Step 3: static fuel rows for prototype
+  // Step 3 fuel rows (静态数据)
+  const step3Rows = [
+    {
+      id: "f1",
+      scope: "file 1",
+      customer: "Ikea",
+      fuelType: "Standard V",
+      fuelSegment: "E1 V",
+      fuelPercent: "",
+    },
+    {
+      id: "f2",
+      scope: "file 2",
+      customer: "Ikea",
+      fuelType: "Custom V",
+      fuelSegment: "",
+      fuelPercent: "15% V",
+    },
+    {
+      id: "f3",
+      scope: "file 3",
+      customer: "Ikea",
+      fuelType: "Standard V",
+      fuelSegment: "E2 V",
+      fuelPercent: "",
+    },
+    {
+      id: "f4",
+      scope: "file 4",
+      customer: "Ikea",
+      fuelType: "Standard V",
+      fuelSegment: "E1 V",
+      fuelPercent: "",
+    },
+    {
+      id: "f5",
+      scope: "file 5",
+      customer: "Ikea",
+      fuelType: "Standard V",
+      fuelSegment: "E1 V",
+      fuelPercent: "",
+    },
+  ];
+
+// 当前选中的 Fuel 行
+const [selectedFuelRowId, setSelectedFuelRowId] = useState(
+  step3Rows[0]?.id ?? null
+);
+
+
+
+
+
   return (
     <>
       <h2 style={styles.h2}>Add Calculator</h2>
@@ -266,9 +383,9 @@ function AddCalculator(props) {
       <form onSubmit={handleSubmit} style={styles.cardGrid}>
         {/* STEP 1 */}
         <section style={styles.card}>
-          <div style={styles.cardHeader}>Step 1 — Inputs</div>
+          <div style={styles.cardHeader}>Step 1 — Upload files</div>
           <div style={styles.field}>
-            <label style={styles.label}>Rate file</label>
+            <label style={styles.label}>Rate files</label>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <label style={{ ...styles.button, cursor: "pointer" }}>
                 Upload file
@@ -281,22 +398,194 @@ function AddCalculator(props) {
               )}
             </div>
           </div>
+        </section>
 
-          <div style={styles.fieldRow}>
-            <label style={styles.label}>Advantage calculation active?</label>
-            <input
-              type="checkbox"
-              checked={advantageActive}
-              onChange={(e) => setAdvantageActive(e.target.checked)}
-              aria-label="Advantage calculation active"
-            />
+
+        {/* STEP 2 */}
+        <section style={styles.card}>
+          <div
+            style={{
+              ...styles.cardHeader,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 8,
+            }}
+          >
+            <span>Step 2 — Verify loaded data</span>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                style={styles.actionGhost}
+                disabled={!selectedScopeId}
+                onClick={() => {
+                  if (!selectedScopeId) return;
+                  const row = step2Rows.find(r => r.id === selectedScopeId);
+                  alert(`Edit (prototype only) for ${row.scope}`);
+                }}
+              >
+                Edit
+              </button>
+              <button
+                style={styles.actionDanger}
+                disabled={!selectedScopeId}
+                onClick={() => {
+                  if (!selectedScopeId) return;
+                  const row = step2Rows.find(r => r.id === selectedScopeId);
+                  alert(`Delete (prototype only) for ${row.scope}`);
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
 
+          <div style={{ overflowX: "auto" }}>
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Scope</th>
+                  <th>Customer</th>
+                  <th>Customer code</th>
+                  <th>UoM</th>
+                  <th>Sales Person</th>
+                  <th>Expiration date</th>
+                  <th>Adv. calc.?</th>
+                </tr>
+              </thead>
+              <tbody>
+                {step2Rows.map((row) => (
+                  <tr key={row.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedScopeId === row.id}
+                        onChange={() => setSelectedScopeId(row.id)}
+                        aria-label={`Select ${row.scope}`}
+                      />
+                    </td>
+                    <td>{row.scope}</td>
+                    <td>{row.customer}</td>
+                    <td>{row.code}</td>
+                    <td>{row.uom}</td>
+                    <td>{row.sales}</td>
+                    <td>{row.expiration}</td>
+                    <td>{row.adv}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <p style={{ ...styles.hint, marginTop: 8 }}>
+            Select one scope and use Edit / Delete to indicate changes.
+          </p>
+        </section>
+
+
+
+        {/* STEP 3 */}
+        <section style={styles.card}>
+          <div
+            style={{
+              ...styles.cardHeader,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 8,
+            }}
+          >
+            <span>Step 3 — Fuel Settings</span>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                style={styles.actionGhost}
+                disabled={!selectedFuelRowId}
+                onClick={() => {
+                  if (!selectedFuelRowId) return;
+                  const row = step3Rows.find((r) => r.id === selectedFuelRowId);
+                  alert(`Edit fuel row (prototype only) for ${row.scope}`);
+                }}
+              >
+                Edit
+              </button>
+              <button
+                style={styles.actionDanger}
+                disabled={!selectedFuelRowId}
+                onClick={() => {
+                  if (!selectedFuelRowId) return;
+                  const row = step3Rows.find((r) => r.id === selectedFuelRowId);
+                  alert(`Delete fuel row (prototype only) for ${row.scope}`);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+
+
+          {/* Fuel scope table */}
+          <div style={{ marginTop: 12, overflowX: "auto" }}>
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Scope</th>
+                  <th>Customer</th>
+                  <th>Fuel type</th>
+                  <th>Fuel segment</th>
+                  <th>Fuel %</th>
+                </tr>
+              </thead>
+              <tbody>
+                {step3Rows.map((row) => (
+                  <tr key={row.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedFuelRowId === row.id}
+                        onChange={() => setSelectedFuelRowId(row.id)}
+                        aria-label={`Select ${row.scope}`}
+                      />
+                    </td>
+
+                    <td>{row.scope}</td>
+                    <td>{row.customer}</td>
+                    <td>{row.fuelType}</td>
+
+                    {/* Fuel segment: 没值时灰底 */}
+                    <td
+                      style={{
+                        background: row.fuelSegment ? "transparent" : "#f3f4f6",
+                      }}
+                    >
+                      {row.fuelSegment}
+                    </td>
+
+                    {/* Fuel %: 没值时灰底 */}
+                    <td
+                      style={{
+                        background: row.fuelPercent ? "transparent" : "#f3f4f6",
+                      }}
+                    >
+                      {row.fuelPercent}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+
+          <p style={{ ...styles.hint, marginTop: 8 }}>
+            Select one row to indicate which fuel setup to edit or delete.
+          </p>
+
+          {/* Previous Fuel type
           <div style={styles.field}>
             <label style={styles.label}>Fuel type</label>
             <div style={styles.inlineGroup}>
               {/* Per request: checkboxes, but mutually exclusive */}
-              <label style={styles.checkboxLabel}>
+              {/* <label style={styles.checkboxLabel}>
                 <input
                   type="checkbox"
                   checked={fuelType === "standard"}
@@ -325,12 +614,43 @@ function AddCalculator(props) {
                 onChange={(e) => setCustomFuelNote(e.target.value)}
               />
             </div>
-          )}
+          )}  */}
         </section>
 
-        {/* STEP 2 */}
+
+
+        {/* STEP 4 */}
         <section style={styles.card}>
-          <div style={styles.cardHeader}>Step 2 — Customer</div>
+          <div style={styles.cardHeader}>Step 4 — Generate access</div>
+
+          <div style={styles.field}>
+            <label style={styles.label}>Contact Name</label>
+            <input
+              style={styles.input}
+              placeholder="Full name"
+              value=""
+              onChange={() => {}}
+            />
+          </div>
+
+          <div style={styles.field}>
+            <label style={styles.label}>Email</label>
+            <input
+              style={styles.input}
+              type="email"
+              placeholder="name@company.com"
+              value=""
+              onChange={() =>{ }}
+              
+            />
+          </div>
+        </section>
+
+
+
+        {/* STEP 3
+        <section style={styles.card}>
+          <div style={styles.cardHeader}>Step 3 — Customer</div>
 
           <div style={styles.field}>
             <label style={styles.label}>a) Map to existing or b) Create new</label>
@@ -410,7 +730,7 @@ function AddCalculator(props) {
               </div>
             </>
           )}
-        </section>
+        </section> */}
 
         {/* Actions (no Live Preview for clients) */}
         <section style={{ ...styles.card, alignSelf: "start" }}>
